@@ -1,4 +1,4 @@
-#React Pomodoro Clock
+# React Pomodoro Clock
 
 Still Working on it...
 

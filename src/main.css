@@ -1,6 +1,77 @@
 body{
-  margin: 0 auto;
-  height: 100vh;
-  width: 100vh;
   background-color: #316672;
+  color: #DDCFD1;
+  font-size: 20px;
+}
+
+.title{
+  height: 5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.counter{
+    height: 0em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.break{
+  margin-right: 550px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.session{
+  text-align: center;
+  vertical-align: middle;
+}
+
+.lol{
+  font-size: 50px;
+}
+
+button{
+  margin-right: 15px;
+  margin-left: 15px;
+  width: 8vh;
+  height: 8vh;
+  font-size: 45px;
+  outline:none;
+  -webkit-box-shadow: 17px 10px 16px -2px rgba(0,0,0,0.75);
+  -moz-box-shadow: 17px 10px 16px -2px rgba(0,0,0,0.75);
+  box-shadow: 17px 10px 16px -2px rgba(0,0,0,0.75);
+}
+
+.timer{
+  height: 3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clock{
+    font-size: 25px;
+    text-align: center;
+    vertical-align: middle;
+    border-style: solid;
+    border-width: 10px;
+    border-left-width: 10px;
+    border-right-width: 10px;
+    border-color: #057676;
+    border-radius: 15%;
+    padding: 5px 120px 10px 120px;
+    background-color: #011414;
+    -webkit-box-shadow: -1px 20px 40px 14px rgba(0,0,0,0.75);
+    -moz-box-shadow: -1px 20px 40px 14px rgba(0,0,0,0.75);
+     box-shadow: -1px 20px 40px 14px rgba(0,0,0,0.75);
+}
+
+.play{
+  height: 18em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

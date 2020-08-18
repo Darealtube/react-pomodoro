@@ -1,29 +1,36 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, {useState, useEffect} from 'react';
 import './main.css';
 
-//&#9208; PAUSE
-function reducer(state,action){
-  switch(action.type){
-    case "decrementbreak":
-    return {...state,breakcount: state.breakcount > 1? state.breakcount - 1 : state.breakcount};
-    break;
-    case "incrementbreak":
-    return {...state,breakcount: state.breakcount < 60? state.breakcount + 1 : state.breakcount};
-    break;
-    case "decrementsession":
-    return {...state,sessioncount: state.sessioncount > 1? state.sessioncount - 1 : state.sessioncount};
-    break;
-    case "incrementsession":
-    return {...state,sessioncount: state.sessioncount < 60? state.sessioncount + 1 : state.sessioncount};
-    break;
-    case "reset":
-    return {breakcount: 1, sessioncount: 1};
-    break;
-  }
-}
-
 function Pomodoro() {
-  const [state,dispatch] = useReducer(reducer, { breakcount : 1, sessioncount: 1, })
+  const [breaks,setbreaks] = useState(1);
+  const [session,setsession] = useState(1);
+  const [able,setable] = useState(true);
+  const [second,setsecond] = useState("00");
+  const [minute,setminute] = useState(1);
+
+  function reset(){
+    setbreaks(1);
+    setsession(1);
+    setable(true);
+    setsecond("00");
+    setminute(1);
+  }
+
+ useEffect(()=>{ setminute(session) },[session]);
+
+ useEffect(()=> {
+     if(able === false){
+       setminute(prevminute => prevminute >=0 && second === "59"? prevminute - 1 : prevminute);
+   }
+ },[second,able])
+
+ useEffect(()=>{
+  if(able === false){
+  var lol = setInterval(()=>{
+    setsecond(prevsecond => prevsecond === "00" && minute !== 0? "59" : prevsecond == "10" || prevsecond < "10"? ("0").concat(prevsecond - 1) : prevsecond - 1);
+  }, 1000);
+}
+},[able])
 
   return (
     <div>
@@ -34,16 +41,16 @@ function Pomodoro() {
            <div className="counter">
            <div className="break">
            <h1>Break Length</h1>
-           <button onClick={()=>{dispatch({type: "decrementbreak"})}}>-</button>
-           <span className="lol">{state.breakcount}</span>
-           <button onClick={()=>{dispatch({type: "incrementbreak"})}}>+</button>
+           <button disabled={!able} onClick={()=> setbreaks(prevbreaks => prevbreaks > 1? breaks - 1 : prevbreaks)}>-</button>
+           <span className="lol">{breaks}</span>
+           <button disabled={!able}  onClick={()=> setbreaks(prevbreaks => prevbreaks < 60? breaks + 1 : prevbreaks)}>+</button>
            </div>
            <span>
            <div className="session">
            <h1>Session Length</h1>
-           <button onClick={()=>{dispatch({type: "decrementsession"})}}>-</button>
-           <span className="lol">{state.sessioncount}</span>
-           <button onClick={()=>{dispatch({type: "incrementsession"})}}>+</button>
+           <button disabled={!able} onClick={()=> setsession(prevsession => prevsession > 1? session - 1 : prevsession)}>-</button>
+           <span className="lol">{session}</span>
+           <button disabled={!able} onClick={()=> setsession(prevsession => prevsession < 60? session + 1 : prevsession)}>+</button>
            </div>
            </span>
            </div>
@@ -51,13 +58,13 @@ function Pomodoro() {
            <div className="timer">
               <div className="clock">
               <h3>Session Time</h3>
-              <h1>{state.sessioncount}:00</h1>
+              <h1>{minute}:{second}</h1>
               </div>
            </div>
 
            <div className="play">
-              <button>&#11208;</button>
-              <span><button onClick={()=>{dispatch({type: "reset"})}}>&#8634;</button></span>
+              <button className="bot" onClick={()=> setable(prevable => !prevable)}>{able? String.fromCharCode(parseInt("2bc8",16)) : (String.fromCharCode(parseInt("275a",16)) + String.fromCharCode(parseInt("275a",16)))}</button>
+              <span><button onClick={reset}>&#8634;</button></span>
            </div>
        </body>
     </div>

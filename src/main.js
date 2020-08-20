@@ -9,6 +9,8 @@ function Pomodoro() {
   const [minute,setminute] = useState(1);
   const lol = useRef(null);
   const [switches, setswitches] = useState(false);
+  const audioEl = document.getElementsByClassName("audio-element")[0]
+  const times = useRef(null);
 
  //HANDLES RESET
   function reset(){
@@ -20,17 +22,42 @@ function Pomodoro() {
     clearInterval(lol.current);
   }
 
+  //HANDLES RESET ALL
+  function rewind(){
+    setbreaks(1);
+    setsession(1);
+    setable(null);
+    setsecond("00");
+    setminute(1);
+    clearInterval(lol.current);
+    setswitches(false);
+  }
 
+//HANDLES SESSION TO BREAK CHANGE AND BREAK TO SESSION CHANGE;
  useEffect(()=>{
-   if(second === "00" && minute === 0){                 //CHANGE
-     setswitches(prevswitches => !prevswitches);
+   if(switches === false){
+   if(second === "00" && minute === 0){
+     setswitches(true);
      setminute(breaks);
      setsecond("00");
+     audioEl.play();
    }
- },[second,minute,able]);
+ }
+ },[second,minute,able,switches]);
+
+ useEffect(()=>{
+   if(switches === true){
+   if(second === "00" && minute === 0){
+     setswitches(false);
+     setminute(session);
+     setsecond("00");
+     audioEl.play();
+   }
+  }
+ },[second,minute,switches]);
 
  //MINUTE WILL CHANGE WHEN SESSION CHANGES
- useEffect(()=>{                                        //CHANGE
+ useEffect(()=>{
    if(switches === false){
    setminute(session)
  }
@@ -42,11 +69,16 @@ function Pomodoro() {
   }
  },[switches,breaks]);
 
- //HANDLES ex: (2:00 CHANGING TO 1:59)
+ //HANDLES MINUTE CHANGE
  useEffect(()=> {
      if(able === false){
-       setminute(prevminute => prevminute >=0 && second === "59"? prevminute - 1 : prevminute);
+      times.current = setTimeout(()=>{
+       setminute(prevminute => second === "00"? prevminute - 1 : prevminute);
+     }, 1010);
    }
+     if(able === true){
+       clearTimeout(times.current);
+     }
  },[second,able])
 
 //HANDLES THE SECONDS COUNTDOWN, TRANSITION FROM 00 TO 59, AND CLEARINTERVAL WHEN PAUSING
@@ -61,10 +93,18 @@ function Pomodoro() {
  }
 },[able])
 
-//HANDLES SESSION TIME (AND BREAK TIME) CHANGE WHEN PAUSED AND SESSION OR BREAK IS INCREASED OR DECREASED
+//HANDLES SESSION TIME AND BREAK TIME CHANGE WHEN PAUSED AND SESSION OR BREAK IS INCREASED OR DECREASED
 useEffect(()=>{
+  if(switches === false){
   setsecond("00")
-},[session]);
+  }
+},[session,switches]);
+
+useEffect(()=>{
+  if(switches === true){
+  setsecond("00");
+  }
+},[breaks,switches]);
 
 //HANDLES PLAY AND PAUSE
 function play(){
@@ -97,16 +137,20 @@ function play(){
 
            <div className="timer">
               <div className="clock">
-              <h3>Session Time</h3>
-              <h1>{minute}:{second}</h1>
+              <h3>{switches? "Break" : "Session"} Time</h3>
+              <h1 style={minute < 1? {color: "red"} : {color: "#ddcfd1"}}>{minute}:{second}</h1>
               </div>
            </div>
 
            <div className="play">
               <button className="bot" onClick={play}>{able === null || able === true? String.fromCharCode(parseInt("2bc8",16)) : (String.fromCharCode(parseInt("275a",16)) + String.fromCharCode(parseInt("275a",16)))}</button>
               <span><button onClick={reset}>&#8634;</button></span>
+              <button className="all" onClick={rewind}>&#128472;</button>
            </div>
        </body>
+       <audio className="audio-element">
+          <source src="https://assets.coderrocketfuel.com/pomodoro-times-up.mp3"></source>
+        </audio>
     </div>
   );
 }

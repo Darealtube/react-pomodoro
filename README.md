@@ -1,5 +1,17 @@
 # React Pomodoro Clock
 
-Still Working on it...
+**React Pomodoro is Finished!**
 
-I will update this README once it finishes.
+![](images/Pomodoro.png)
+
+# React Hooks Used
+
+**UseState**
+**UseEffect**
+
+I can try to clean it up more if possible.
+
+To run it on your local machine clone into the repo, then type: 
+
+    npm install && npm start
+    

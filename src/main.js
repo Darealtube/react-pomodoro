@@ -9,7 +9,7 @@ function Pomodoro() {
   const [minute,setminute] = useState(1);
   const lol = useRef(null);
   const [switches, setswitches] = useState(false);
-  const audioEl = document.getElementsByClassName("audio-element")[0]
+  const audioEl = document.getElementsByClassName("audio-element")[0] //SOUND
   const times = useRef(null);
 
  //HANDLES RESET
@@ -35,39 +35,39 @@ function Pomodoro() {
 
 //HANDLES SESSION TO BREAK CHANGE AND BREAK TO SESSION CHANGE;
  useEffect(()=>{
-   if(switches === false){
    if(second === "00" && minute === 0){
-     setswitches(true);
-     setminute(breaks);
-     setsecond("00");
+     setswitches(prevswitches => !prevswitches);
      audioEl.play();
    }
- }
- },[second,minute,able,switches]);
+ },[second,minute]);
 
- useEffect(()=>{
-   if(switches === true){
-   if(second === "00" && minute === 0){
-     setswitches(false);
-     setminute(session);
-     setsecond("00");
-     audioEl.play();
-   }
-  }
- },[second,minute,switches]);
-
- //MINUTE WILL CHANGE WHEN SESSION CHANGES
+//HANDLES THE FINAL PROBLEM ON THE POMODORO CLOCK WHERE WHEN PAUSED AND BREAK OR SESSION TIME VALUE IS CHANGED, IT MESSES UP. (1)
  useEffect(()=>{
    if(switches === false){
-   setminute(session)
+   if(able === false){
+   setTimeout(()=>{setsecond("59")}, 1000);
+   setminute(session);
+   }
+   if(able === true || able === null){
+    setminute(session);
+    setsecond("00");
+    }
  }
  },[session,switches]);
 
+//HANDLES THE FINAL PROBLEM ON THE POMODORO CLOCK WHERE WHEN PAUSED AND BREAK OR SESSION TIME VALUE IS CHANGED, IT MESSES UP. (2)
  useEffect(()=>{
    if(switches === true){
-    setminute(breaks)
-  }
- },[switches,breaks]);
+   if(able === false){
+   setTimeout(()=>{setsecond("59")}, 1000);
+   setminute(breaks);
+   }
+   if(able === true || able === null){
+    setminute(breaks);
+    setsecond("00");
+   }
+ }
+ },[breaks,switches]);
 
  //HANDLES MINUTE CHANGE
  useEffect(()=> {
@@ -85,32 +85,18 @@ function Pomodoro() {
  useEffect(()=>{
   if(able === false){
   lol.current = setInterval(()=>{
-    setsecond(prevsecond => prevsecond === "00" && minute !== 0? "59" : prevsecond == "10" || prevsecond < "10"? ("0").concat(prevsecond - 1) : prevsecond - 1);
+    setsecond(prevsecond => prevsecond === "00" && minute !== 0? "59" : prevsecond == "10" || prevsecond < "10"? ("0").concat(`${prevsecond - 1}`) : prevsecond - 1);
   }, 1000);
  }
  if(able === true){
    clearInterval(lol.current);
  }
-},[able])
-
-//HANDLES SESSION TIME AND BREAK TIME CHANGE WHEN PAUSED AND SESSION OR BREAK IS INCREASED OR DECREASED
-useEffect(()=>{
-  if(switches === false){
-  setsecond("00")
-  }
-},[session,switches]);
-
-useEffect(()=>{
-  if(switches === true){
-  setsecond("00");
-  }
-},[breaks,switches]);
+},[able]);
 
 //HANDLES PLAY AND PAUSE
 function play(){
   setable(prevable => prevable === null? false : prevable === false? true : prevable === true? false : null);
 }
-
 
   return (
     <div>
